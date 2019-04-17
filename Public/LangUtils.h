@@ -3,37 +3,36 @@
 namespace tc
 {
 
-class NonCopyable
+class FNonCopyable
 {
 protected:
-	constexpr NonCopyable() = default;
-	~NonCopyable() = default;
+    constexpr FNonCopyable() = default;
+    ~FNonCopyable() = default;
 
 private:
-	NonCopyable(const NonCopyable&) = delete;
-	void operator=(const NonCopyable&) = delete;
+    FNonCopyable(const FNonCopyable&) = delete;
+    void operator=(const FNonCopyable&) = delete;
 };
 
 class not_implemented_exception : public std::logic_error
 {
 public:
-	explicit not_implemented_exception(const std::string& _Message)
-		: logic_error(_Message)
-	{
-	}
+    explicit not_implemented_exception(const std::string& _Message)
+        : logic_error(_Message)
+    {
+    }
 
-	explicit not_implemented_exception(const char* _Message)
-		: logic_error(_Message)
-	{
-	}
+    explicit not_implemented_exception(const char* _Message)
+        : logic_error(_Message)
+    {
+    }
 
-    char const * what() const noexcept override { return "Function not yet implemented."; }
+    char const* what() const noexcept override { return "Function not yet implemented."; }
 };
 
-template <typename E>
-constexpr typename std::underlying_type<E>::type to_underlying(E e)
+template <typename E> constexpr typename std::underlying_type<E>::type to_underlying(E e)
 {
-	return static_cast<typename std::underlying_type<E>::type>(e);
+    return static_cast<typename std::underlying_type<E>::type>(e);
 }
 
 }

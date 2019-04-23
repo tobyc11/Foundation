@@ -79,7 +79,7 @@ float FPerfTimer::GetDeltaTime() const
 }
 }
 
-#else
+#elif TC_OS == TC_OS_MAC_OS_X
 
 #include <mach/mach.h>
 #include <mach/mach_time.h>

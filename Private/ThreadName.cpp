@@ -57,6 +57,8 @@ void SetThreadName(std::thread* thread, const char* threadName)
 #else
 
 #include <pthread.h>
+#include <string.h>
+#include <assert.h>
 
 void SetThreadName(std::thread* thread, const char* threadName)
 {
@@ -70,8 +72,13 @@ void SetThreadName(std::thread* thread, const char* threadName)
 
 void SetThreadName(const char* threadName)
 {
+#ifdef __APPLE__
     pthread_setname_np(threadName);
+#else
+    assert(strlen(threadName) < 16);
+    pthread_setname_np(pthread_self(), threadName);
 	//prctl(PR_SET_NAME, threadName, 0, 0, 0);
+#endif
 }
 
 #endif

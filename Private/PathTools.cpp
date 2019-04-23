@@ -28,6 +28,14 @@
         #define POSIX
     #else
     #endif
+#elif TC_OS == TC_OS_LINUX
+    #define POSIX
+    #define LINUX
+
+    #include <strings.h>
+    #include <string.h>
+    #define _stricmp strcasecmp
+    #define _strnicmp strncasecmp
 #endif
 
 #if defined OSX

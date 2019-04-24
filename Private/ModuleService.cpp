@@ -5,35 +5,35 @@
 namespace tc
 {
 
-//Forward declarations
+// Forward declarations
 IModule* OSLoadModule(const std::string& name);
 void OSFreeModule(IModule* module);
 
 FModuleService& FModuleService::Get()
 {
-	static FModuleService* singleton = nullptr;
-	if (!singleton)
-		singleton = new FModuleService();
-	return *singleton;
+    static FModuleService* singleton = nullptr;
+    if (!singleton)
+        singleton = new FModuleService();
+    return *singleton;
 }
 
 IModule* FModuleService::LoadModule(const std::string& name)
 {
     if (LoadedModules.contains(name))
     {
-        //Module already loaded
-		IModule* module = LoadedModules.map(name);
+        // Module already loaded
+        IModule* module = LoadedModules.map(name);
         ModuleRefCounts[module]++;
         return module;
     }
 
-	IModule* module = LoadModuleStaticDynamic(name);
-	if (!module)
-		return nullptr;
+    IModule* module = LoadModuleStaticDynamic(name);
+    if (!module)
+        return nullptr;
 
-	LoadedModules.insert(name, module);
+    LoadedModules.insert(name, module);
     ModuleRefCounts[module] = 0;
-	module->Init();
+    module->Init();
     return module;
 }
 
@@ -42,21 +42,21 @@ bool FModuleService::FreeModule(IModule* module)
     auto iter = ModuleRefCounts.find(module);
     if (iter == ModuleRefCounts.end())
     {
-        //Module not loaded
+        // Module not loaded
         return false;
     }
     else
     {
         if (iter->second != 0)
         {
-            //Module still referenced
+            // Module still referenced
             iter->second--;
             return true;
         }
 
-        //Otherwize we can actually free it
-		module->Shutdown();
-		FreeModuleStaticDynamic(module);
+        // Otherwize we can actually free it
+        module->Shutdown();
+        FreeModuleStaticDynamic(module);
         LoadedModules.erase(module);
         ModuleRefCounts.erase(iter);
         return true;
@@ -65,44 +65,44 @@ bool FModuleService::FreeModule(IModule* module)
 
 void FModuleService::RegisterStaticModule(const std::string& name, PFNCREATEMODULE getModuleFn)
 {
-	StaticModuleRegistry[name] = getModuleFn;
+    StaticModuleRegistry[name] = getModuleFn;
 }
 
 IModule* FModuleService::LoadModuleStaticDynamic(const std::string& name)
 {
-	IModule* module = nullptr;
+    IModule* module = nullptr;
 
-	auto staticIter = StaticModuleRegistry.find(name);
-	if (staticIter != StaticModuleRegistry.end())
-	{
-		//We found a static module!
-		module = staticIter->second();
-	}
+    auto staticIter = StaticModuleRegistry.find(name);
+    if (staticIter != StaticModuleRegistry.end())
+    {
+        // We found a static module!
+        module = staticIter->second();
+    }
 
-	if (!module)
-		module = OSLoadModule(name);
-	
-	return module;
+    if (!module)
+        module = OSLoadModule(name);
+
+    return module;
 }
 
 void FModuleService::FreeModuleStaticDynamic(IModule* module)
 {
-	std::string moduleName = LoadedModules.map(module);
-	auto staticModuleIter = StaticModuleRegistry.find(moduleName);
-	if (staticModuleIter != StaticModuleRegistry.end())
-	{
-		//This module is static
-		return;
-	}
+    std::string moduleName = LoadedModules.map(module);
+    auto staticModuleIter = StaticModuleRegistry.find(moduleName);
+    if (staticModuleIter != StaticModuleRegistry.end())
+    {
+        // This module is static
+        return;
+    }
 
-	//Otherwise, we have to actually free the module
-	OSFreeModule(module);
+    // Otherwise, we have to actually free the module
+    OSFreeModule(module);
 }
 
 }
 
 #if TC_OS == TC_OS_WINDOWS_NT
-//Since Windows.h invovles so much polluion, we include it at the end
+// Since Windows.h invovles so much polluion, we include it at the end
 #include <Windows.h>
 namespace tc
 {
@@ -116,9 +116,9 @@ IModule* OSLoadModule(const std::string& name)
     if (handle == NULL)
         return nullptr;
 
-	std::string impFunctionName = "CreateModule" + name;
+    std::string impFunctionName = "CreateModule" + name;
 
-	PFNCREATEMODULE getModule = (PFNCREATEMODULE)GetProcAddress(handle, impFunctionName.c_str());
+    PFNCREATEMODULE getModule = (PFNCREATEMODULE)GetProcAddress(handle, impFunctionName.c_str());
     if (getModule == NULL)
     {
         FreeLibrary(handle);

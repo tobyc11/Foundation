@@ -44,6 +44,8 @@ public:
         return result;
     }
 
+	static std::string Trim(std::string str, std::string::value_type ch);
+
 	//========= Copyright Valve Corporation ============//
 	static std::string UTF16to8(const wchar_t* in);
 	static std::wstring UTF8to16(const char* in);

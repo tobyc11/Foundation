@@ -15,16 +15,13 @@ public:
     }
 
     void Unlock() { LockFlag.clear(std::memory_order_release); }
-    
-    bool TryLock()
-    {
-        return !LockFlag.test_and_set(std::memory_order_acquire);
-    }
+
+    bool TryLock() { return !LockFlag.test_and_set(std::memory_order_acquire); }
 
     // To meet BasicLockable C++ named requirement
     void lock() { Lock(); }
     void unlock() { Unlock(); }
-    bool try_lock() { TryLock(); }
+    bool try_lock() { return TryLock(); }
 
 private:
     alignas(64) std::atomic_flag LockFlag = ATOMIC_FLAG_INIT;

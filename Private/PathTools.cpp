@@ -2,6 +2,7 @@
 
 #include "PathTools.h"
 #include "StringUtils.h"
+#include "Platform.h"
 
 #if defined( _WIN32)
 #include <Windows.h>

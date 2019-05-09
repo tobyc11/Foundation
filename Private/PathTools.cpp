@@ -869,7 +869,13 @@ std::string FPathTools::GetUserAppDataPath()
         return[[paths objectAtIndex : 0] UTF8String];
     }
 #elif defined( LINUX )
-    static_assert("Implement me");
+    const char *pchHome = getenv("HOME");
+    if (pchHome == NULL)
+    {
+        return "";
+    }
+    std::string home(pchHome);
+    return home + "/.local/share/";
 #endif
 }
 

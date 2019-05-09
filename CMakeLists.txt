@@ -1,6 +1,9 @@
 set(MODULE_NAME Foundation)
 
 set(CMAKE_CXX_STANDARD 14)
+if (UNIX AND NOT APPLE)
+	set(LINUX TRUE)
+endif()
 
 file(GLOB FOUNDATION_PRIVATE_SOURCES Private/*.h Private/*.cpp)
 file(GLOB FOUNDATION_PUBLIC_SOURCES Public/*.h Public/*.inc)
@@ -18,6 +21,11 @@ if(APPLE)
     find_library(FOUNDATION_LIBRARIES Foundation)
     target_link_libraries(${MODULE_NAME} PRIVATE ${FOUNDATION_LIBRARIES})
 endif()
+
+if (LINUX)
+    target_link_libraries(${MODULE_NAME} PRIVATE dl)
+endif()
+
 target_include_directories(${MODULE_NAME} PRIVATE Private)
 target_include_directories(${MODULE_NAME} PUBLIC Public)
 if(DEFAULT_COMPILE_OPTIONS)

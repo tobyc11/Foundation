@@ -14,6 +14,15 @@ private:
     void operator=(const FNonCopyable&) = delete;
 };
 
+class FNoImplicitCopy
+{
+protected:
+    constexpr FNoImplicitCopy() = default;
+    ~FNoImplicitCopy() = default;
+
+    explicit FNoImplicitCopy(const FNoImplicitCopy&) = default;
+};
+
 class not_implemented_exception : public std::logic_error
 {
 public:

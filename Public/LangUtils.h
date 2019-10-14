@@ -14,6 +14,19 @@ private:
     void operator=(const FNonCopyable&) = delete;
 };
 
+class FNoCopyMove
+{
+protected:
+    constexpr FNoCopyMove() = default;
+    ~FNoCopyMove() = default;
+
+private:
+    FNoCopyMove(const FNoCopyMove&) = delete;
+    void operator=(const FNoCopyMove&) = delete;
+    FNoCopyMove(FNoCopyMove&&) = delete;
+    void operator=(FNoCopyMove&&) = delete;
+};
+
 class FNoImplicitCopy
 {
 protected:

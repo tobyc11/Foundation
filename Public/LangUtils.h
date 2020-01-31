@@ -36,6 +36,16 @@ protected:
     explicit FNoImplicitCopy(const FNoImplicitCopy&) = default;
 };
 
+template <typename TMember> struct TMemberPtrTraits
+{
+};
+
+template <typename R, typename T> struct TMemberPtrTraits<R T::*>
+{
+    using TReturn = R;
+    using TClass = T;
+};
+
 class not_implemented_exception : public std::logic_error
 {
 public:
